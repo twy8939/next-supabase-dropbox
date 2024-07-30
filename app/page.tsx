@@ -1,9 +1,10 @@
-import Logo from "components/logo";
+import UI from "./ui";
+
+export const metadata = {
+  title: "Dropbox",
+  description: "Dropbox with Next.js and Supabase",
+};
 
 export default function Home() {
-  return (
-    <main className="w-full p-4">
-      <Logo />
-    </main>
-  );
+  return <UI />;
 }
