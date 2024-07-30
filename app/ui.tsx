@@ -4,6 +4,7 @@ import React from "react";
 import Logo from "components/logo";
 import SearchComponent from "components/search-component";
 import FileDragDropZone from "components/file-drag-dropzone";
+import ImageList from "components/image-list";
 
 export default function UI() {
   const [searchInput, setSearchInput] = React.useState("");
@@ -17,6 +18,8 @@ export default function UI() {
       />
 
       <FileDragDropZone />
+
+      <ImageList />
     </main>
   );
 }
