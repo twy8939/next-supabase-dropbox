@@ -1,6 +1,6 @@
 "use server";
 
-import { createServerSupabaseClient } from "supabase/server";
+import { createServerSupabaseClient } from "utils/supabase/server";
 
 function handleError(error) {
   if (error) {
@@ -16,6 +16,17 @@ export async function uploadFile(formData: FormData) {
   const { data, error } = await supabase.storage
     .from(process.env.NEXT_PUBLIC_STORAGE_BUCKET)
     .upload(file.name, file, { upsert: true });
+
+  handleError(error);
+
+  return data;
+}
+
+export async function searchFiles(search: string) {
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase.storage
+    .from(process.env.NEXT_PUBLIC_STORAGE_BUCKET)
+    .list(null, { search });
 
   handleError(error);
 

@@ -19,7 +19,7 @@ export default function UI() {
 
       <FileDragDropZone />
 
-      <ImageList />
+      <ImageList searchInput={searchInput} />
     </main>
   );
 }
