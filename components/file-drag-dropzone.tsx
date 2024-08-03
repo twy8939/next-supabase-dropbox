@@ -1,13 +1,13 @@
 "use client";
 
-import { Button } from "@material-tailwind/react";
+import { Button, Spinner } from "@material-tailwind/react";
 import { useMutation } from "@tanstack/react-query";
 import { uploadFile } from "actions/storageActions";
 import { queryClient } from "config/ReactQueryClientProvider";
-import { useRef } from "react";
+import { useDropzone } from "react-dropzone";
 
 export default function FileDragDropZone() {
-  const fileRef = useRef(null);
+  // const fileRef = useRef(null);
   const uploadImageMutation = useMutation({
     mutationFn: uploadFile,
     onSuccess: () => {
@@ -15,9 +15,8 @@ export default function FileDragDropZone() {
     },
   });
 
-  const handleSubmitClick = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const file = fileRef.current.files?.[0];
+  const onDrop = async (acceptedFiles) => {
+    const file = acceptedFiles?.[0];
 
     if (file) {
       const formData = new FormData();
@@ -29,16 +28,21 @@ export default function FileDragDropZone() {
     }
   };
 
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
   return (
-    <form
-      onSubmit={handleSubmitClick}
-      className="w-full py-20 border-4 border-dotted border-indigo-700 flex flex-col items-center"
+    <div
+      className="w-full py-20 border-4 border-dotted border-indigo-700 flex flex-col items-center cursor-pointer"
+      {...getRootProps()}
     >
-      <input type="file" ref={fileRef} />
-      <p>파일을 여기에 끌어다 놓거나 클릭하여 업로드하세요.</p>
-      <Button loading={uploadImageMutation.isPending} type="submit">
-        파일 업로드
-      </Button>
-    </form>
+      <input type="file" {...getInputProps()} />
+      {uploadImageMutation.isPending ? (
+        <Spinner />
+      ) : isDragActive ? (
+        <p>파일을 놓아주세요.</p>
+      ) : (
+        <p>파일을 여기에 끌어다 놓거나 클릭하여 업로드하세요.</p>
+      )}
+    </div>
   );
 }
