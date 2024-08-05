@@ -11,15 +11,25 @@ function handleError(error) {
 
 export async function uploadFile(formData: FormData) {
   const supabase = await createServerSupabaseClient();
-  const file = formData.get("file") as File;
+  const files = Array.from(formData.entries()).map(
+    ([name, file]) => file as File
+  );
 
-  const { data, error } = await supabase.storage
-    .from(process.env.NEXT_PUBLIC_STORAGE_BUCKET)
-    .upload(file.name, file, { upsert: true });
+  const results = await Promise.all(
+    files.map((file) =>
+      supabase.storage
+        .from(process.env.NEXT_PUBLIC_STORAGE_BUCKET)
+        .upload(file.name, file, { upsert: true })
+    )
+  );
 
-  handleError(error);
+  // const { data, error } = await supabase.storage
+  //   .from(process.env.NEXT_PUBLIC_STORAGE_BUCKET)
+  //   .upload(file.name, file, { upsert: true });
 
-  return data;
+  // handleError(error);
+
+  return results;
 }
 
 export async function searchFiles(search: string) {

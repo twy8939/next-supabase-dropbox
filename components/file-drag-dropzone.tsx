@@ -16,11 +16,12 @@ export default function FileDragDropZone() {
   });
 
   const onDrop = async (acceptedFiles) => {
-    const file = acceptedFiles?.[0];
-
-    if (file) {
+    if (acceptedFiles.length > 0) {
       const formData = new FormData();
-      formData.append("file", file);
+
+      acceptedFiles.forEach((file) => {
+        formData.append("file", file);
+      });
 
       const result = await uploadImageMutation.mutate(formData);
 
@@ -28,7 +29,10 @@ export default function FileDragDropZone() {
     }
   };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    multiple: true,
+  });
 
   return (
     <div
